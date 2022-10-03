@@ -10,6 +10,6 @@ interface ScheduleApiService {
     @GET("./stations_list")
     fun getAllStations() : FetchedStations
 
-    @GET("./schedule")
+    @GET("./schedule/?apikey=d98d9bbd-e23f-48af-86b4-dbb3ba55db9e&station=s9600213&transport_types=suburban&direction=на%20Москву")
     fun getScheduleBy() : Call<FetchedSchedule>
 }

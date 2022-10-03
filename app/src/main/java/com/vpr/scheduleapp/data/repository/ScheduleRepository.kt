@@ -8,9 +8,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ScheduleRepository(private val scheduleApiService: ScheduleApiService) {
+class ScheduleRepository() {
 
-    val retrofit = RetrofitBuilder.getRetrofit()
+    val scheduleApiService = RetrofitBuilder.getRetrofit().create(ScheduleApiService::class.java)
 
     fun getSchedule(callback: ApiCallback<FetchedSchedule>) {
         scheduleApiService.getScheduleBy().enqueue(object: Callback<FetchedSchedule> {

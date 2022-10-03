@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitBuilder {
-    private const val BASE_URL = "https://api.rasp.yandex.net/v3.0"
+    private const val BASE_URL = "https://api.rasp.yandex.net/v3.0/"
 
     fun getRetrofit(): Retrofit {
         val httpLoggingInterceptor = HttpLoggingInterceptor()
