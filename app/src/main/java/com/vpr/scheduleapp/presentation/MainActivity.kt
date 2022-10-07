@@ -8,7 +8,7 @@ import com.vpr.scheduleapp.databinding.ActivityScheduleBinding
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityScheduleBinding
 
-    val vm: MainViewModel by viewModels()
+    private val vm: MainViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityScheduleBinding.inflate(layoutInflater)

@@ -20,7 +20,7 @@ abstract class AppDatabase : RoomDatabase() {
                     "app_database"
                 ).build()
                 INSTANCE = instance
-                instance
+                return instance
             }
         }
     }
