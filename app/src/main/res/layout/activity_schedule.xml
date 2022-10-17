@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <SearchView
+        android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_margin="10dp"
@@ -26,6 +27,7 @@
             android:text="На сегодня" />
 
         <Button
+            android:id="@+id/btn_tomorrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -33,6 +35,7 @@
             android:text="На завтра"/>
 
         <Button
+            android:id="@+id/btn_choose_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
@@ -43,10 +46,12 @@
     </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/schedule_recycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"

@@ -2,9 +2,10 @@ package com.vpr.scheduleapp.data.model.schedule
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "fetched_schedule", primaryKeys = ["date", "stations"])
+@Entity(tableName = "fetched_schedule", primaryKeys = ["date", "station"])
 data class FetchedSchedule(
     @ColumnInfo
     val date: String,

@@ -1,17 +1,16 @@
 package com.vpr.scheduleapp.data.repository
 
-import android.content.Context
+import android.util.Log
 import com.vpr.scheduleapp.data.api.ApiCallback
 import com.vpr.scheduleapp.data.api.RetrofitBuilder
 import com.vpr.scheduleapp.data.api.ScheduleApiService
-import com.vpr.scheduleapp.data.database.AppDatabase
-import com.vpr.scheduleapp.data.database.ScheduleDao
 import com.vpr.scheduleapp.data.model.schedule.FetchedSchedule
+import com.vpr.scheduleapp.data.model.stations.FetchedStations
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ScheduleRepository(private val scheduleDao: ScheduleDao) {
+class ScheduleRepository() {
 
     private val scheduleApiService = RetrofitBuilder.getRetrofit().create(ScheduleApiService::class.java)
 
@@ -23,7 +22,6 @@ class ScheduleRepository(private val scheduleDao: ScheduleDao) {
             ) {
                 if (response.isSuccessful){
                     callback.onSuccess(response.body())
-                    response.body()?.let { scheduleDao.insertSchedule(it) }
                 }
                 else {
                     callback.onError("Api schedule error")
@@ -38,8 +36,28 @@ class ScheduleRepository(private val scheduleDao: ScheduleDao) {
 
     }
 
-    fun getStationsFromApi() {
+    fun getStationsFromApi(callback: ApiCallback<FetchedStations>) {
+        scheduleApiService.getAllStations().enqueue(object: Callback<FetchedStations> {
+            override fun onResponse(
+                call: Call<FetchedStations>,
+                response: Response<FetchedStations>
+            ) {
+                if (response.isSuccessful){
+                    callback.onSuccess(response.body())
+                    Log.e("api", response.body()!!.countries.joinToString())
+                }
+                else {
+                    callback.onError("Api schedule error")
+                    Log.e("api", "ERROR!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    Log.e("api", response.body()!!.countries.joinToString())
+                }
+            }
 
+            override fun onFailure(call: Call<FetchedStations>, t: Throwable) {
+                callback.onException(t)
+            }
+
+        })
     }
 
     fun getStationsFromDb() {
