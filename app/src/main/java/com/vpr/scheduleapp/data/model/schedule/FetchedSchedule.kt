@@ -1,11 +1,10 @@
 package com.vpr.scheduleapp.data.model.schedule
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
+import com.vpr.scheduleapp.data.database.converters.*
 
 @Entity(tableName = "fetched_schedule", primaryKeys = ["date", "station"])
+@TypeConverters(ScheduleConverter::class, DirectionConverter::class, Converters::class)
 data class FetchedSchedule(
     @ColumnInfo
     val date: String,

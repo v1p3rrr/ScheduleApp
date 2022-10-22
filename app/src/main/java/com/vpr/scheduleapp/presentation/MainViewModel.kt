@@ -6,13 +6,14 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.vpr.scheduleapp.data.api.ApiCallback
+import com.vpr.scheduleapp.data.database.ScheduleDatabase
 import com.vpr.scheduleapp.data.model.schedule.FetchedSchedule
 import com.vpr.scheduleapp.data.model.stations.FetchedStations
 import com.vpr.scheduleapp.data.repository.ScheduleRepository
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ScheduleRepository()
+    private val repository = ScheduleRepository(ScheduleDatabase.getDatabaseInstance(application).scheduleDao())
 
     private val _scheduleLiveData = MutableLiveData<FetchedSchedule>()
     val scheduleLiveData: LiveData<FetchedSchedule>

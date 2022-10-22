@@ -10,7 +10,7 @@ import com.vpr.scheduleapp.data.model.schedule.FetchedSchedule
 interface ScheduleDao {
 
     @Query("SELECT * FROM fetched_schedule")
-    fun getSchedule()
+    fun getSchedule() : List<FetchedSchedule>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSchedule(fetchedSchedule: FetchedSchedule)
