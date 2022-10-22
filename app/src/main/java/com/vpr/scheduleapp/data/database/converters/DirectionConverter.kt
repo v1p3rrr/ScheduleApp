@@ -9,13 +9,13 @@ import com.vpr.scheduleapp.data.model.schedule.Schedule
 class DirectionConverter {
     @TypeConverter
     fun fromList(value: List<Direction>): String {
-        val type = object : TypeToken<List<Schedule>>() {}.type
+        val type = object : TypeToken<List<Direction>>() {}.type
         return Gson().toJson(value, type)
     }
 
     @TypeConverter
     fun fromString(value: String) : List<Direction>{
-        val type = object : TypeToken<List<Schedule>>() {}.type
+        val type = object : TypeToken<List<Direction>>() {}.type
         return Gson().fromJson(value, type)
     }
 }

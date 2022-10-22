@@ -13,7 +13,7 @@ import com.vpr.scheduleapp.data.repository.ScheduleRepository
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val repository = ScheduleRepository(ScheduleDatabase.getDatabaseInstance(application).scheduleDao())
+    private val repository = ScheduleRepository(ScheduleDatabase.getDatabaseInstance(application))
 
     private val _scheduleLiveData = MutableLiveData<FetchedSchedule>()
     val scheduleLiveData: LiveData<FetchedSchedule>
