@@ -36,6 +36,7 @@ class MainViewModel @Inject constructor(private val repository: ScheduleReposito
                         fetchedSchedule?.schedule?.forEach {
                             it.departure = convertTime(it.departure)
                             it.arrival = convertTime(it.arrival) //todo changed val to var - guess not the best practice
+                            //todo
                         }
                         _scheduleLiveData.postValue(fetchedSchedule)
                     }
@@ -71,7 +72,9 @@ class MainViewModel @Inject constructor(private val repository: ScheduleReposito
         })
     }
 
-    //todo in which layer is it better to do conversion? Also before or after storing it into db?
+    //todo in which layer is it better to do conversion?
+    // Also before or after storing it into db?
+    // Where to calculate travel time difference?
     private fun convertTime(time: String): String {
         val initialFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale("ru", "RU"))
         val newFormat = SimpleDateFormat("HH:mm", Locale("ru", "RU"))

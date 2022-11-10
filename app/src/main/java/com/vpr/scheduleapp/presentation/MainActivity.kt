@@ -4,13 +4,13 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,14 +38,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     //todo
-    // -searchView
     // -travelTime difference
     // -storing entities properly with foreign keys
-    // -migrate to fragments(?)
+    // -migrate to fragments(?) - do I not need them at all?
     // -make navigation(?)
-    // -make a new screen for whoever knows what lol
-    // -make stations searching
-    // -implement different schedule for different stations and different _days_
+    // -make a new screen for whoever knows what lol (displaying train details or about app tab)
+    // -implement stations searching
+    // -implement different schedule for different stations, directions and dates
     // -therefore, make it possible to switch between dates
 
     fun someOldTestingShit() {
@@ -64,21 +63,30 @@ class MainActivity : AppCompatActivity() {
 
 @Composable
 fun ScheduleListScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
-    Surface {
-        val scheduleList = viewModel.scheduleLiveData.observeAsState()
-        LazyColumn(modifier) {
-            if (scheduleList.value != null) {
-                for (i in scheduleList.value!!.schedule) {  //todo nullable!!
-                    item {
-                        ScheduleSimpleCard(
-                            shortTitle = i.thread.short_title,
-                            departureTime = i.departure,
-                            arrivalTime = i.arrival,
-                            travelTime = "none" //todo
-                        )
+    Surface { //todo surface / scaffold diff, is containers amount overuse ok?
+        Column (horizontalAlignment = Alignment.CenterHorizontally) {
+            val scheduleList = viewModel.scheduleLiveData.observeAsState()
+            SearchBar(
+                onQueryChange = {
+                    //todo how to clear focus when not typing and clicked/swiped other element?
+                },
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+            LazyColumn(modifier) {
+                if (scheduleList.value != null) {
+                    for (i in scheduleList.value!!.schedule) {  //todo nullable!!
+                        item {
+                            ScheduleSimpleCard(
+                                shortTitle = i.thread.short_title,
+                                departureTime = i.departure,
+                                arrivalTime = i.arrival,
+                                travelTime = "none" //todo
+                            )
+                        }
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -94,9 +102,13 @@ fun ScheduleSimpleCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier.padding(horizontal = 8.dp, vertical = 2.dp),
+        modifier
+            .padding(horizontal = 8.dp, vertical = 2.dp)
+            .clickable {
+                //todo
+            },
         colors = CardDefaults.cardColors(Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
     ) {
         Column(modifier = Modifier.padding(vertical = 8.dp)) {
             Row(
@@ -112,6 +124,25 @@ fun ScheduleSimpleCard(
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class) //todo should i use some alternative??
+@Composable
+fun SearchBar(onQueryChange: (String) -> Unit, modifier: Modifier = Modifier) {
+    var queryState by remember { mutableStateOf("") }
+    OutlinedTextField(
+        value = queryState,
+        label = {
+            Text("Поиск")
+        },
+        onValueChange = {
+            queryState = it
+            onQueryChange(queryState)
+        },
+        singleLine = true,
+        leadingIcon = { Icon(Icons.Filled.Search, contentDescription = "Search Icon") },
+        modifier = modifier.fillMaxWidth(0.9f)
+    )
 }
 
 @Preview
