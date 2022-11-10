@@ -25,19 +25,6 @@ abstract class ScheduleDatabase : RoomDatabase() {
     abstract fun scheduleDao() : ScheduleDao
 
     companion object {
-
-        private var INSTANCE: ScheduleDatabase? = null
-
-        fun getDatabaseInstance(context: Context) : ScheduleDatabase {
-            return INSTANCE ?: synchronized(this){
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    ScheduleDatabase::class.java,
-                    "app_database"
-                ).build()
-                INSTANCE = instance
-                return instance
-            }
-        }
+        const val DB_NAME = "room_database"
     }
 }

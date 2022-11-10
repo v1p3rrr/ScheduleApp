@@ -5,6 +5,7 @@ import com.google.gson.Gson
 import com.vpr.scheduleapp.data.model.schedule.*
 
 class Converters {
+    //todo do i need converters for objects?
     @TypeConverter
     fun carrierToString(carrier: Carrier): String = Gson().toJson(carrier)
 

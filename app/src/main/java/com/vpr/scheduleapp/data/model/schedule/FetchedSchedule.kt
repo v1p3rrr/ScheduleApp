@@ -3,7 +3,13 @@ package com.vpr.scheduleapp.data.model.schedule
 import androidx.room.*
 import com.vpr.scheduleapp.data.database.converters.*
 
-@Entity(tableName = "fetched_schedule", primaryKeys = ["date", "station"])
+@Entity(tableName = "fetched_schedule", primaryKeys = ["date", "station"],
+//    foreignKeys =
+//[ForeignKey(entity = Pagination::class,
+//    parentColumns = arrayOf("parentClassColumn"),
+//    childColumns = arrayOf("childClassColumn"),
+//    onDelete = ForeignKey.CASCADE)]
+)
 @TypeConverters(ScheduleConverter::class, DirectionConverter::class, Converters::class)
 data class FetchedSchedule(
     @ColumnInfo
@@ -34,11 +40,11 @@ data class Direction(
 @Entity(tableName = "schedule", primaryKeys = ["thread", "departure", "arrival"])
 data class Schedule(
     @ColumnInfo
-    val arrival: String,
+    var arrival: String,
     @ColumnInfo
     val days: String,
     @ColumnInfo
-    val departure: String,
+    var departure: String,
     @ColumnInfo
     val direction: String,
     @ColumnInfo

@@ -10,7 +10,11 @@ import com.vpr.scheduleapp.data.model.schedule.FetchedSchedule
 interface ScheduleDao {
 
     @Query("SELECT * FROM fetched_schedule")
-    fun getSchedule() : List<FetchedSchedule>
+    fun getAllSchedule() : List<FetchedSchedule>
+
+    @Query("SELECT * FROM fetched_schedule WHERE station = :station")
+    fun getScheduleByStation(station: String) : List<FetchedSchedule>
+    //todo how to get entry by station if its an object made with converter?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertSchedule(fetchedSchedule: FetchedSchedule)
