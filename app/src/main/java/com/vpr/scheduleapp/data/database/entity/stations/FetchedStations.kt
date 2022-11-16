@@ -1,4 +1,5 @@
-package com.vpr.scheduleapp.data.model.stations
+package com.vpr.scheduleapp.data.database.entity.stations
+
 
 data class FetchedStations(
     val countries: List<Country>

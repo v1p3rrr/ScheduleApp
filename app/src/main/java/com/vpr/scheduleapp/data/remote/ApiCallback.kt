@@ -1,4 +1,4 @@
-package com.vpr.scheduleapp.data.api
+package com.vpr.scheduleapp.data.remote
 
 interface ApiCallback<T> {
     fun onSuccess(t: T?)

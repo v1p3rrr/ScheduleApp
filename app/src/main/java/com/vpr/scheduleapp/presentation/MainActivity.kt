@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,8 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val vm: MainViewModel by viewModels()
         vm.getSchedule()
-        vm.getStationsFromApi()
+        //vm.getStationsFromApi()
         setContent {
             ScheduleAppTheme {
                 ScheduleListScreen()
@@ -44,8 +47,9 @@ class MainActivity : AppCompatActivity() {
     // -make navigation(?)
     // -make a new screen for whoever knows what lol (displaying train details or about app tab)
     // -implement stations searching
-    // -implement different schedule for different stations, directions and dates
+    // -implement different scheduleDTO for different stations, directionDTOS and dates
     // -therefore, make it possible to switch between dates
+    // migrate to rxjava
 
     fun someOldTestingShit() {
 //        {
@@ -64,23 +68,29 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun ScheduleListScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
     Surface { //todo surface / scaffold diff, is containers amount overuse ok?
-        Column (horizontalAlignment = Alignment.CenterHorizontally) {
+        Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
             val scheduleList = viewModel.scheduleLiveData.observeAsState()
+            val focusManager = LocalFocusManager.current
             SearchBar(
                 onQueryChange = {
+                                viewModel.getScheduleByStationAndDate("s9600771", "2022-11-17")
                     //todo how to clear focus when not typing and clicked/swiped other element?
                 },
                 modifier = Modifier.padding(vertical = 4.dp)
             )
-            LazyColumn(modifier) {
+            LazyColumn(modifier.pointerInput(Unit){
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }) {
                 if (scheduleList.value != null) {
                     for (i in scheduleList.value!!.schedule) {  //todo nullable!!
                         item {
                             ScheduleSimpleCard(
-                                shortTitle = i.thread.short_title,
+                                shortTitle = i.thread.short_title?:i.thread.title?:"Unknown station",
                                 departureTime = i.departure,
                                 arrivalTime = i.arrival,
-                                travelTime = "none" //todo
+                                travelTime = i.travel_time
                             )
                         }
                     }
@@ -116,6 +126,7 @@ fun ScheduleSimpleCard(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(modifier = Modifier.padding(horizontal = 32.dp), text = departureTime)
+                Text(modifier = Modifier.padding(horizontal = 32.dp), text = travelTime)
                 Text(modifier = Modifier.padding(horizontal = 32.dp), text = arrivalTime)
             }
             Spacer(modifier = Modifier.height(16.dp))

@@ -2,9 +2,9 @@ package com.vpr.scheduleapp.data.di
 
 import android.content.Context
 import androidx.room.Room
-import com.vpr.scheduleapp.data.api.ScheduleApiService
+import com.vpr.scheduleapp.data.remote.ScheduleApiService
 import com.vpr.scheduleapp.data.database.ScheduleDatabase
-import com.vpr.scheduleapp.data.repository.ScheduleRepository
+import com.vpr.scheduleapp.data.repository.ScheduleRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -59,5 +59,5 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideScheduleRepository(scheduleDatabase: ScheduleDatabase, scheduleApiService: ScheduleApiService) = ScheduleRepository(scheduleDatabase, scheduleApiService)
+    fun provideScheduleRepository(scheduleDatabase: ScheduleDatabase, scheduleApiService: ScheduleApiService) = ScheduleRepositoryImpl(scheduleDatabase, scheduleApiService)
 }

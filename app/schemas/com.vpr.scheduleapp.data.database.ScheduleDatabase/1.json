@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "3bea88f7cdb337c5748fa7dcdb267e4b",
+    "identityHash": "f64d32ca21dee09fce4bcd0acae744c6",
     "entities": [
       {
         "tableName": "fetched_schedule",
@@ -63,8 +63,14 @@
       },
       {
         "tableName": "direction",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `code` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
           {
             "fieldPath": "code",
             "columnName": "code",
@@ -80,7 +86,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "code"
+            "id"
           ],
           "autoGenerate": false
         },
@@ -89,8 +95,14 @@
       },
       {
         "tableName": "schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`arrival` TEXT NOT NULL, `days` TEXT NOT NULL, `departure` TEXT NOT NULL, `direction` TEXT NOT NULL, `except_days` TEXT NOT NULL, `is_fuzzy` INTEGER NOT NULL, `platform` TEXT NOT NULL, `stops` TEXT NOT NULL, `terminal` TEXT NOT NULL, `thread` TEXT NOT NULL, PRIMARY KEY(`thread`, `departure`, `arrival`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `arrival` TEXT NOT NULL, `days` TEXT NOT NULL, `departure` TEXT NOT NULL, `travel_time` TEXT NOT NULL, `direction` TEXT NOT NULL, `except_days` TEXT, `is_fuzzy` INTEGER NOT NULL, `platform` TEXT, `stops` TEXT, `terminal` TEXT, `thread` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
           {
             "fieldPath": "arrival",
             "columnName": "arrival",
@@ -110,6 +122,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "travel_time",
+            "columnName": "travel_time",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
             "fieldPath": "direction",
             "columnName": "direction",
             "affinity": "TEXT",
@@ -119,7 +137,7 @@
             "fieldPath": "except_days",
             "columnName": "except_days",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "is_fuzzy",
@@ -131,19 +149,19 @@
             "fieldPath": "platform",
             "columnName": "platform",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "stops",
             "columnName": "stops",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "terminal",
             "columnName": "terminal",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "thread",
@@ -154,9 +172,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "thread",
-            "departure",
-            "arrival"
+            "id"
           ],
           "autoGenerate": false
         },
@@ -165,8 +181,14 @@
       },
       {
         "tableName": "schedule_direction",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `code` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
           {
             "fieldPath": "code",
             "columnName": "code",
@@ -182,7 +204,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "code"
+            "id"
           ],
           "autoGenerate": false
         },
@@ -191,8 +213,14 @@
       },
       {
         "tableName": "station",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `popular_title` TEXT NOT NULL, `short_title` TEXT NOT NULL, `station_type` TEXT NOT NULL, `station_type_name` TEXT NOT NULL, `title` TEXT NOT NULL, `transport_type` TEXT NOT NULL, `type` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `code` TEXT NOT NULL, `popular_title` TEXT, `short_title` TEXT, `station_type` TEXT, `station_type_name` TEXT, `title` TEXT, `transport_type` TEXT, `type` TEXT, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
           {
             "fieldPath": "code",
             "columnName": "code",
@@ -203,48 +231,48 @@
             "fieldPath": "popular_title",
             "columnName": "popular_title",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "short_title",
             "columnName": "short_title",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "station_type",
             "columnName": "station_type",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "station_type_name",
             "columnName": "station_type_name",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "title",
             "columnName": "title",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "transport_type",
             "columnName": "transport_type",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "type",
             "columnName": "type",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "code"
+            "id"
           ],
           "autoGenerate": false
         },
@@ -253,7 +281,7 @@
       },
       {
         "tableName": "thread",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `carrier` TEXT NOT NULL, `express_type` TEXT NOT NULL, `number` TEXT NOT NULL, `short_title` TEXT NOT NULL, `title` TEXT NOT NULL, `transport_subtype` TEXT NOT NULL, `transport_type` TEXT NOT NULL, `vehicle` TEXT NOT NULL, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `express_type` TEXT, `number` TEXT, `short_title` TEXT, `title` TEXT, `transport_subtype` TEXT, `transport_type` TEXT, `vehicle` TEXT, PRIMARY KEY(`uid`))",
         "fields": [
           {
             "fieldPath": "uid",
@@ -262,52 +290,46 @@
             "notNull": true
           },
           {
-            "fieldPath": "carrier",
-            "columnName": "carrier",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
             "fieldPath": "express_type",
             "columnName": "express_type",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "number",
             "columnName": "number",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "short_title",
             "columnName": "short_title",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "title",
             "columnName": "title",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "transport_subtype",
             "columnName": "transport_subtype",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "transport_type",
             "columnName": "transport_type",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "vehicle",
             "columnName": "vehicle",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -321,8 +343,14 @@
       },
       {
         "tableName": "transport_subtype",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `color` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `code` TEXT NOT NULL, `color` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
           {
             "fieldPath": "code",
             "columnName": "code",
@@ -344,73 +372,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "code"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "codes",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`iata` TEXT NOT NULL, `icao` TEXT NOT NULL, `sirena` TEXT NOT NULL, PRIMARY KEY(`iata`, `icao`, `sirena`))",
-        "fields": [
-          {
-            "fieldPath": "iata",
-            "columnName": "iata",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "icao",
-            "columnName": "icao",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "sirena",
-            "columnName": "sirena",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "iata",
-            "icao",
-            "sirena"
-          ],
-          "autoGenerate": false
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "carrier",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` INTEGER NOT NULL, `codes` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`code`))",
-        "fields": [
-          {
-            "fieldPath": "code",
-            "columnName": "code",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "codes",
-            "columnName": "codes",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "title",
-            "columnName": "title",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "code"
+            "id"
           ],
           "autoGenerate": false
         },
@@ -419,8 +381,14 @@
       },
       {
         "tableName": "pagination",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`limit` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `total` INTEGER NOT NULL, PRIMARY KEY(`limit`, `offset`, `total`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER, `limit` INTEGER NOT NULL, `offset` INTEGER NOT NULL, `total` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
           {
             "fieldPath": "limit",
             "columnName": "limit",
@@ -442,9 +410,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "limit",
-            "offset",
-            "total"
+            "id"
           ],
           "autoGenerate": false
         },
@@ -455,7 +421,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3bea88f7cdb337c5748fa7dcdb267e4b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f64d32ca21dee09fce4bcd0acae744c6')"
     ]
   }
 }
