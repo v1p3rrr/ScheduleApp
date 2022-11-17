@@ -1,6 +1,7 @@
 package com.vpr.scheduleapp.data.repository
 
 import android.util.Log
+import com.vpr.scheduleapp.BuildConfig
 import com.vpr.scheduleapp.data.remote.ApiCallback
 import com.vpr.scheduleapp.data.remote.ScheduleApiService
 import com.vpr.scheduleapp.data.database.ScheduleDatabase
@@ -16,6 +17,8 @@ import javax.inject.Singleton
 
 @Singleton
 class ScheduleRepositoryImpl @Inject constructor(private val scheduleDatabase: ScheduleDatabase, private val scheduleApiService: ScheduleApiService): ScheduleRepository {
+
+    private val API_KEY = BuildConfig.YANDEX_RASP_KEY
 
     private val dao = scheduleDatabase.scheduleDao()
 
