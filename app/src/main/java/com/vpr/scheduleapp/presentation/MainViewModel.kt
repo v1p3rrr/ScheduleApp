@@ -1,85 +1,61 @@
 package com.vpr.scheduleapp.presentation
 
-import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.vpr.scheduleapp.data.remote.ApiCallback
-import com.vpr.scheduleapp.data.remote.dto.stations.CountryDTO
-import com.vpr.scheduleapp.data.repository.ScheduleRepositoryImpl
-import com.vpr.scheduleapp.domain.model.schedule.FetchedSchedule
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.*
+import com.vpr.scheduleapp.domain.model.schedule.Schedule
+import com.vpr.scheduleapp.domain.model.schedule.StationSchedule
+import com.vpr.scheduleapp.domain.repository.ScheduleRepository
+import com.vpr.scheduleapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val repository: ScheduleRepositoryImpl) :
+class MainViewModel @Inject constructor(private val repository: ScheduleRepository) :
     ViewModel() {
 
-    private val _scheduleLiveData = MutableLiveData<FetchedSchedule?>()
-    val scheduleLiveData: LiveData<FetchedSchedule?>
+    private val _scheduleListState = mutableStateOf(emptyList<Schedule>())
+    val scheduleListState: State<List<Schedule>> = _scheduleListState
+
+    private val _errorMessageSharedFlow = MutableSharedFlow<String>()
+    val errorMessageSharedFlow = _errorMessageSharedFlow.asSharedFlow()
+
+    private var _scheduleLiveData = MutableLiveData<List<Schedule>>(emptyList())
+    val scheduleLiveData: LiveData<List<Schedule>>
         get() = _scheduleLiveData
 
-    private val _stationsLiveData = MutableLiveData<FetchedSchedule>()
-    val stationsLiveData: LiveData<FetchedSchedule>
+    private val _stationsLiveData = MutableLiveData<StationSchedule>()
+    val stationsLiveData: LiveData<StationSchedule>
         get() = _stationsLiveData
 
 
-    fun getSchedule() {
-        repository.getScheduleDirectlyFromApi(object : ApiCallback<FetchedSchedule> {
-            override fun onSuccess(t: FetchedSchedule?) {
-                    t.let { fetchedSchedule ->
-                        _scheduleLiveData.postValue(fetchedSchedule)
-                }
-            }
-
-            override fun onError(error: String) {
-                Log.e("msg: ", error)
-            }
-
-            override fun onException(exception: Throwable) {
-                Log.e("msg: ", exception.message!!)
-            }
-
-        })
-    }
-
-    fun getScheduleByStationAndDate(stationCode: String, date: String) {
+    fun getScheduleByStationCodeAndDate(stationCode: String, date: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                _scheduleLiveData.postValue(
-                    repository.getScheduleByStationCodeAndDate(
-                        stationCode,
-                        date
-                    )
-                )
+                repository.getScheduleByStationCodeAndDate(
+                    stationCode,
+                    date
+                ).onEach { result ->
+                    when (result) {
+                        is Resource.Success -> {
+                            _scheduleListState.value = result.data?.schedule ?: emptyList()
+                        }
+                        is Resource.Error -> {
+                            _errorMessageSharedFlow.emit(result.message?: "Unknown error")
+                        }
+                        is Resource.Loading -> {
+                            _errorMessageSharedFlow.emit(result.message?: "Loading")
+                        }
+                    }
+                }.launchIn(this)
             }
         }
     }
 
-    //todo remove this bullshit from viewmodel
-    fun getStationsFromApi() {
-        repository.getStationsFromApi(object : ApiCallback<List<CountryDTO>> {
-            override fun onSuccess(t: List<CountryDTO>?) {
-                t.let {
-                    //kys _stationsLiveData.postValue(it)
-                }
-                Log.e("msg: ", "ok!")
-            }
-
-            override fun onError(error: String) {
-                Log.e("msg: ", error)
-            }
-
-            override fun onException(exception: Throwable) {
-                Log.e("msg: ", exception.message!!)
-                exception.printStackTrace()
-            }
-        })
-    }
 
     //todo in which layer is it better to do conversion?
     // Also before or after storing it into db?

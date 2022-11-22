@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,13 +19,12 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.vpr.scheduleapp.BuildConfig
 import com.vpr.scheduleapp.ui.theme.ScheduleAppTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 
 @AndroidEntryPoint
 class MainActivity: AppCompatActivity() {
@@ -34,17 +32,23 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vm: MainViewModel by viewModels()
-        vm.getSchedule()
+        vm.getScheduleByStationCodeAndDate(stationCode = "s9879631", date = "2022-11-21")
         //vm.getStationsFromApi()
         setContent {
+            val snackbarHostState = remember { SnackbarHostState() }
             ScheduleAppTheme {
                 ScheduleListScreen()
+
+                LaunchedEffect(key1 = true) {
+                    vm.errorMessageSharedFlow.collectLatest {
+                        snackbarHostState.showSnackbar(message = it)
+                    }
+                }
             }
         }
     }
 
     //todo
-    // -travelTime difference
     // -make navigation(?)
     // -make a new screen for whoever knows what lol (displaying train details or about app tab)
     // -implement stations searching
@@ -73,7 +77,7 @@ fun ScheduleListScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.fillMaxWidth()
         ) {
-            val scheduleList = viewModel.scheduleLiveData.observeAsState()
+            val scheduleListState = viewModel.scheduleListState.value
             val focusManager = LocalFocusManager.current
             SearchBar(
                 onQueryChange = {
@@ -99,18 +103,16 @@ fun ScheduleListScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
                     focusManager.clearFocus()
                 })
             }) {
-                if (scheduleList.value != null) {
-                    for (i in scheduleList.value!!.schedule) {  //todo nullable!!
-                        item {
-                            ScheduleSimpleCard(
-                                shortTitle = i.thread.short_title ?: i.thread.title
-                                ?: "Unknown station",
-                                departureTime = i.departure,
-                                arrivalTime = i.arrival,
-                                travelTime = i.travel_time
-                            )
-                        }
-                    }
+                items(scheduleListState.size) { i ->
+                    val scheduleElement = scheduleListState[i]
+                    ScheduleSimpleCard(
+                        shortTitle = scheduleElement.thread.short_title
+                            ?: scheduleElement.thread.title
+                            ?: "Unknown station",
+                        departureTime = scheduleElement.departure,
+                        arrivalTime = scheduleElement.arrival,
+                        travelTime = scheduleElement.travel_time
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
