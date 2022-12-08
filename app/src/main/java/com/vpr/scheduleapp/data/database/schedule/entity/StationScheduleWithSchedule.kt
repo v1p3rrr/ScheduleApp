@@ -6,10 +6,10 @@ import com.vpr.scheduleapp.domain.model.schedule.Schedule
 
 data class StationScheduleWithSchedule(
     @Embedded
-    val fetchedSchedule: StationScheduleEntity,
+    val stationSchedule: StationScheduleEntity,
     @Relation(
         parentColumn = "id",
-        entityColumn = "fetchedScheduleId",
+        entityColumn = "stationScheduleId",
         entity = Schedule::class
     )
     val schedule: List<Schedule>?

@@ -1,8 +1,10 @@
 package com.vpr.scheduleapp.data.repository
 
 import com.vpr.scheduleapp.data.api.ScheduleApiService
+import com.vpr.scheduleapp.data.api.dto.schedule_between.ScheduleBetweenDTO
 import com.vpr.scheduleapp.data.api.dto.station_schedule.StationScheduleDTO
 import com.vpr.scheduleapp.data.database.schedule.ScheduleDatabase
+import com.vpr.scheduleapp.domain.model.schedule.Segment
 import com.vpr.scheduleapp.domain.model.schedule.StationSchedule
 import com.vpr.scheduleapp.domain.repository.ScheduleRepository
 import com.vpr.scheduleapp.util.Resource
@@ -26,49 +28,51 @@ class ScheduleRepositoryImpl @Inject constructor(
     private val dao = scheduleDatabase.scheduleDao()
 
     override fun getScheduleByStationCodeAndDate(
-        stationCode: String,
+        from: String,
+        to: String,
         date: String
-    ): Flow<Resource<StationSchedule>> = flow {
+    ): Flow<Resource<List<Segment?>>> = flow() {
 
         emit(Resource.Loading())
 
-        val schedule = dao.getScheduleByStationCode(stationCode, date)
-        emit(Resource.Loading(schedule?.toStationSchedule()))
+        val schedule = dao.getScheduleByStation(from, to, date)
+        emit(Resource.Loading(schedule.map { it?.toSegment() } ))
         val scope = CoroutineScope(Dispatchers.IO)
-        api.getScheduleOnStation(station_code = stationCode, date = date)
-            .enqueue(object : Callback<StationScheduleDTO> {
+        api.getScheduleByStationCodeAndDate(from_code = from, to_code = to, date = date)
+            .enqueue(object : Callback<ScheduleBetweenDTO> {
                 override fun onResponse(
-                    call: Call<StationScheduleDTO>,
-                    response: Response<StationScheduleDTO>
+                    call: Call<ScheduleBetweenDTO>,
+                    response: Response<ScheduleBetweenDTO>
                 ) {
-                    if (response.isSuccessful) {
+                    if (response.isSuccessful && response.body()?.segment!=null) {
                         scope.launch {
-                            dao.deleteSchedule(stationCode, date)
-                            response.body()?.toStationScheduleEntity()
-                                ?.let { dao.insertSchedule(it) }
+                            dao.deleteScheduleByStation(from, to, date)
+                            response.body()?.let {
+                                dao.insertPagination(it.pagination.toPaginationEntity())
+                                it.segment.forEach { segment ->
+                                    dao.insertThread(segment.thread.toThreadEntity())
+                                    dao.insertStation(segment.from.toStationEntity())
+                                    dao.insertStation(segment.to.toStationEntity())
+                                    dao.insertSchedule(segment.toSegmentEntity(it.search.date)) }
+                            }
                         }
                     } else {
-                        scope.launch {
                             emit(Resource.Error(message = "Something went wrong"))
-                        }
                     }
                 }
 
-                override fun onFailure(call: Call<StationScheduleDTO>, t: Throwable) {
+                override fun onFailure(call: Call<ScheduleBetweenDTO>, t: Throwable) {
                     scope.launch {
                         emit(Resource.Error(message = "Connection problems"))
                     }
                 }
             })
-        val newSchedule = dao.getScheduleByStationCode(stationCode, date)
-        emit(Resource.Success(newSchedule?.toStationSchedule()))
-
-        val newSchedule1 = dao.getAllSchedule()
-        emit(Resource.Success(newSchedule1[0].toStationSchedule()))
+        val newSchedule = dao.getScheduleByStation(from, to, date)
+        emit(Resource.Success(newSchedule.map { it?.toSegment() }))
     }
 
-    override fun getScheduleFromDb(stationCode: String, date: String): StationSchedule? {
-        return dao.getScheduleByStationCode(stationCode, date)?.toStationSchedule()
+    override fun getScheduleFromDb(from: String, to: String, date: String): List<Segment?> {
+        return dao.getScheduleByStation(from, to, date).map { it?.toSegment() }
     }
 
 }

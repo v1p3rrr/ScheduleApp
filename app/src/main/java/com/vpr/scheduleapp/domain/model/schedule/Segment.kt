@@ -13,5 +13,7 @@ data class Segment(
     val has_transfers: Boolean,
     val start_date: String,
     val stops: String,
-    val thread: Threadd
+    val thread: Threadd,
+    val pagination: Pagination?,
+    val date: String
 )

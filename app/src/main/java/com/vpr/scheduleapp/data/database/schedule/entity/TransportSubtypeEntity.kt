@@ -7,20 +7,18 @@ import com.vpr.scheduleapp.domain.model.schedule.TransportSubtype
 
 @Entity(tableName = "transport_subtype")
 data class TransportSubtypeEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long? = null,
-    @ColumnInfo
+    @PrimaryKey
     val code: String,
     @ColumnInfo
     val color: String,
     @ColumnInfo
-    val title: String
+    val subtype_title: String
 ) {
     fun toTransportSubtype(): TransportSubtype {
         return TransportSubtype(
             code = code,
             color = color,
-            title = title
+            title = subtype_title
         )
     }
 }

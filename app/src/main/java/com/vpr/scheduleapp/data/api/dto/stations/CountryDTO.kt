@@ -19,7 +19,7 @@ data class CountryDTO(
     fun toCountryEntity(): CountryEntity {
         return CountryEntity(
             code = codes.yandex_code,
-            regions = regions.map { it.toRegionEntity() },
+            regions = regions.map { it.toRegionEntity(codes.yandex_code) },
             title = title
         )
     }

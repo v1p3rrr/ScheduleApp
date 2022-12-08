@@ -1,6 +1,6 @@
 package com.vpr.scheduleapp.data.api.dto.schedule_between
 
-import com.vpr.scheduleapp.data.database.schedule.entity.SegmentEntity
+import com.vpr.scheduleapp.data.database.schedule.entity.SegmentScheduleEntity
 
 data class SegmentDTO(
     val arrival: String,
@@ -18,8 +18,8 @@ data class SegmentDTO(
     val thread: ThreadDTO,
     val tickets_info: TicketsInfoDTO
 ) {
-    fun toSegmentEntity(): SegmentEntity {
-        return SegmentEntity(
+    fun toSegmentEntity(date: String): SegmentScheduleEntity {
+        return SegmentScheduleEntity(
             arrival = arrival,
             arrival_platform = arrival_platform,
             arrival_terminal = arrival_terminal,
@@ -27,12 +27,13 @@ data class SegmentDTO(
             departure_platform = departure_platform,
             departure_terminal = departure_terminal,
             duration = duration,
-            from = from.toStationEntity(),
-            to = to.toStationEntity(),
+            from_id = from.code,
+            to_id = to.code,
             has_transfers = has_transfers,
             start_date = start_date,
             stops = stops,
-            thread = thread.toThreadEntity()
+            thread_id = thread.uid,
+            date = date
         )
     }
 }

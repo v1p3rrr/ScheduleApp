@@ -1,8 +1,6 @@
 package com.vpr.scheduleapp.data.database.schedule.entity
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.vpr.scheduleapp.domain.model.schedule.Threadd
 
 @Entity(tableName = "thread")
@@ -17,7 +15,7 @@ data class ThreadEntity(
     val short_title: String?,
     @ColumnInfo
     val title: String?,
-    @ColumnInfo
+    @Embedded
     val transport_subtype: TransportSubtypeEntity?,
     @ColumnInfo
     val transport_type: String?,

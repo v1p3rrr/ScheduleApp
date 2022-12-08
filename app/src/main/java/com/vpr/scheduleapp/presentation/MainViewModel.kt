@@ -4,6 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.*
 import com.vpr.scheduleapp.domain.model.schedule.Schedule
+import com.vpr.scheduleapp.domain.model.schedule.Segment
 import com.vpr.scheduleapp.domain.model.schedule.StationSchedule
 import com.vpr.scheduleapp.domain.repository.ScheduleRepository
 import com.vpr.scheduleapp.util.Resource
@@ -18,14 +19,14 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: ScheduleRepository) :
     ViewModel() {
 
-    private val _scheduleListState = mutableStateOf(emptyList<Schedule>())
-    val scheduleListState: State<List<Schedule>> = _scheduleListState
+    private val _scheduleListState = mutableStateOf(emptyList<Segment?>())
+    val scheduleListState: State<List<Segment?>> = _scheduleListState
 
     private val _errorMessageSharedFlow = MutableSharedFlow<String>()
     val errorMessageSharedFlow = _errorMessageSharedFlow.asSharedFlow()
 
-    private var _scheduleLiveData = MutableLiveData<List<Schedule>>(emptyList())
-    val scheduleLiveData: LiveData<List<Schedule>>
+    private var _scheduleLiveData = MutableLiveData<List<Segment?>>(emptyList())
+    val scheduleLiveData: LiveData<List<Segment?>>
         get() = _scheduleLiveData
 
     private val _stationsLiveData = MutableLiveData<StationSchedule>()
@@ -33,16 +34,13 @@ class MainViewModel @Inject constructor(private val repository: ScheduleReposito
         get() = _stationsLiveData
 
 
-    fun getScheduleByStationCodeAndDate(stationCode: String, date: String) {
+    fun getScheduleByStationCodeAndDate(from: String, to: String, date: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                repository.getScheduleByStationCodeAndDate(
-                    stationCode,
-                    date
-                ).onEach { result ->
+                repository.getScheduleByStationCodeAndDate(from, to, date).onEach { result ->
                     when (result) {
                         is Resource.Success -> {
-                            _scheduleListState.value = result.data?.schedule ?: emptyList()
+                            _scheduleListState.value = result.data ?: emptyList()
                         }
                         is Resource.Error -> {
                             _errorMessageSharedFlow.emit(result.message?: "Unknown error")

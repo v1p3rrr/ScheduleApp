@@ -37,10 +37,10 @@ class Converters {
     fun stringToPagination(string: String): PaginationEntity = Gson().fromJson(string, PaginationEntity::class.java)
 
     @TypeConverter
-    fun segmentToString(segment: SegmentEntity): String = Gson().toJson(segment)
+    fun segmentToString(segment: SegmentScheduleEntity): String = Gson().toJson(segment)
 
     @TypeConverter
-    fun stringToSegment(string: String): SegmentEntity = Gson().fromJson(string, SegmentEntity::class.java)
+    fun stringToSegment(string: String): SegmentScheduleEntity = Gson().fromJson(string, SegmentScheduleEntity::class.java)
 
 
     @TypeConverter

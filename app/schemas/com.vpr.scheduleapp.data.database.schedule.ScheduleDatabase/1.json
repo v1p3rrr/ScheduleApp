@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f37d632ccdb5be29b7dc280364a72456",
+    "identityHash": "ff03988c731bfd47a96a556bdabfa394",
     "entities": [
       {
         "tableName": "schedule_station",
@@ -269,7 +269,7 @@
       },
       {
         "tableName": "thread",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `express_type` TEXT, `number` TEXT, `short_title` TEXT, `title` TEXT, `transport_subtype` TEXT, `transport_type` TEXT, `vehicle` TEXT, PRIMARY KEY(`uid`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` TEXT NOT NULL, `express_type` TEXT, `number` TEXT, `short_title` TEXT, `title` TEXT, `transport_type` TEXT, `vehicle` TEXT, `code` TEXT, `color` TEXT, `subtype_title` TEXT, PRIMARY KEY(`uid`))",
         "fields": [
           {
             "fieldPath": "uid",
@@ -302,12 +302,6 @@
             "notNull": false
           },
           {
-            "fieldPath": "transport_subtype",
-            "columnName": "transport_subtype",
-            "affinity": "TEXT",
-            "notNull": false
-          },
-          {
             "fieldPath": "transport_type",
             "columnName": "transport_type",
             "affinity": "TEXT",
@@ -316,6 +310,24 @@
           {
             "fieldPath": "vehicle",
             "columnName": "vehicle",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transport_subtype.code",
+            "columnName": "code",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transport_subtype.color",
+            "columnName": "color",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transport_subtype.subtype_title",
+            "columnName": "subtype_title",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -331,14 +343,8 @@
       },
       {
         "tableName": "transport_subtype",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `code` TEXT NOT NULL, `color` TEXT NOT NULL, `title` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `color` TEXT NOT NULL, `subtype_title` TEXT NOT NULL, PRIMARY KEY(`code`))",
         "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": false
-          },
           {
             "fieldPath": "code",
             "columnName": "code",
@@ -352,17 +358,17 @@
             "notNull": true
           },
           {
-            "fieldPath": "title",
-            "columnName": "title",
+            "fieldPath": "subtype_title",
+            "columnName": "subtype_title",
             "affinity": "TEXT",
             "notNull": true
           }
         ],
         "primaryKey": {
           "columnNames": [
-            "id"
+            "code"
           ],
-          "autoGenerate": true
+          "autoGenerate": false
         },
         "indices": [],
         "foreignKeys": []
@@ -406,8 +412,8 @@
         "foreignKeys": []
       },
       {
-        "tableName": "segment",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `arrival` TEXT NOT NULL, `arrival_platform` TEXT NOT NULL, `arrival_terminal` TEXT NOT NULL, `departure` TEXT NOT NULL, `departure_platform` TEXT NOT NULL, `departure_terminal` TEXT NOT NULL, `duration` INTEGER NOT NULL, `from` TEXT NOT NULL, `to` TEXT NOT NULL, `has_transfers` INTEGER NOT NULL, `start_date` TEXT NOT NULL, `stops` TEXT NOT NULL, `thread` TEXT NOT NULL)",
+        "tableName": "segment_schedule",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `arrival` TEXT NOT NULL, `arrival_platform` TEXT NOT NULL, `arrival_terminal` TEXT NOT NULL, `departure` TEXT NOT NULL, `departure_platform` TEXT NOT NULL, `departure_terminal` TEXT NOT NULL, `duration` INTEGER NOT NULL, `from_id` TEXT NOT NULL, `to_id` TEXT NOT NULL, `has_transfers` INTEGER NOT NULL, `start_date` TEXT NOT NULL, `stops` TEXT NOT NULL, `thread_id` TEXT NOT NULL, `pagination_id` TEXT, `date` TEXT NOT NULL, FOREIGN KEY(`from_id`) REFERENCES `station`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`to_id`) REFERENCES `station`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`thread_id`) REFERENCES `thread`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`pagination_id`) REFERENCES `pagination`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -458,14 +464,14 @@
             "notNull": true
           },
           {
-            "fieldPath": "from",
-            "columnName": "from",
+            "fieldPath": "from_id",
+            "columnName": "from_id",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "to",
-            "columnName": "to",
+            "fieldPath": "to_id",
+            "columnName": "to_id",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -488,40 +494,20 @@
             "notNull": true
           },
           {
-            "fieldPath": "thread",
-            "columnName": "thread",
+            "fieldPath": "thread_id",
+            "columnName": "thread_id",
             "affinity": "TEXT",
             "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "id"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [],
-        "foreignKeys": []
-      },
-      {
-        "tableName": "schedule_between",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `pagination` TEXT NOT NULL, `segment` TEXT NOT NULL)",
-        "fields": [
+          },
           {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
+            "fieldPath": "pagination_id",
+            "columnName": "pagination_id",
+            "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "pagination",
-            "columnName": "pagination",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "segment",
-            "columnName": "segment",
+            "fieldPath": "date",
+            "columnName": "date",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -532,14 +518,96 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_segment_schedule_from_id",
+            "unique": false,
+            "columnNames": [
+              "from_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_segment_schedule_from_id` ON `${TABLE_NAME}` (`from_id`)"
+          },
+          {
+            "name": "index_segment_schedule_to_id",
+            "unique": false,
+            "columnNames": [
+              "to_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_segment_schedule_to_id` ON `${TABLE_NAME}` (`to_id`)"
+          },
+          {
+            "name": "index_segment_schedule_thread_id",
+            "unique": false,
+            "columnNames": [
+              "thread_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_segment_schedule_thread_id` ON `${TABLE_NAME}` (`thread_id`)"
+          },
+          {
+            "name": "index_segment_schedule_pagination_id",
+            "unique": false,
+            "columnNames": [
+              "pagination_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_segment_schedule_pagination_id` ON `${TABLE_NAME}` (`pagination_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "station",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "from_id"
+            ],
+            "referencedColumns": [
+              "code"
+            ]
+          },
+          {
+            "table": "station",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "to_id"
+            ],
+            "referencedColumns": [
+              "code"
+            ]
+          },
+          {
+            "table": "thread",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "thread_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          },
+          {
+            "table": "pagination",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "pagination_id"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f37d632ccdb5be29b7dc280364a72456')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff03988c731bfd47a96a556bdabfa394')"
     ]
   }
 }

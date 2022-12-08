@@ -32,7 +32,7 @@ class MainActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vm: MainViewModel by viewModels()
-        vm.getScheduleByStationCodeAndDate(stationCode = "s9879631", date = "2022-11-21")
+        vm.getScheduleByStationCodeAndDate(from = "s9879631", to = "s9600771", date = "2022-11-21")
         //vm.getStationsFromApi()
         setContent {
             val snackbarHostState = remember { SnackbarHostState() }
@@ -105,14 +105,16 @@ fun ScheduleListScreen(modifier: Modifier = Modifier, viewModel: MainViewModel =
             }) {
                 items(scheduleListState.size) { i ->
                     val scheduleElement = scheduleListState[i]
-                    ScheduleSimpleCard(
-                        shortTitle = scheduleElement.thread.short_title
-                            ?: scheduleElement.thread.title
-                            ?: "Unknown station",
-                        departureTime = scheduleElement.departure,
-                        arrivalTime = scheduleElement.arrival,
-                        travelTime = scheduleElement.travel_time
-                    )
+                    scheduleElement?.let {
+                        ScheduleSimpleCard(
+                            shortTitle = scheduleElement.thread.short_title
+                                ?: scheduleElement.thread.title
+                                ?: "Unknown station",
+                            departureTime = scheduleElement.departure,
+                            arrivalTime = scheduleElement.arrival,
+                            travelTime = scheduleElement.duration.toString()
+                        )
+                    }
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))

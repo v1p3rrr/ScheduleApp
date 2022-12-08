@@ -20,7 +20,7 @@ data class TransportSubtypeDTO(
         return TransportSubtypeEntity(
             code = code,
             color = color,
-            title = title
+            subtype_title = title
         )
     }
 }

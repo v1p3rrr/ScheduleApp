@@ -9,7 +9,7 @@ import com.vpr.scheduleapp.data.database.schedule.converters.ScheduleConverter
 import com.vpr.scheduleapp.data.database.schedule.entity.*
 
 
-@Database(entities = [StationScheduleEntity::class, DirectionEntity::class, ScheduleEntity::class, ScheduleDirectionEntity::class, StationEntity::class, ThreadEntity::class, TransportSubtypeEntity::class, PaginationEntity::class, SegmentEntity::class, ScheduleBetweenEntity::class], version = 1)
+@Database(entities = [StationScheduleEntity::class, DirectionEntity::class, ScheduleEntity::class, ScheduleDirectionEntity::class, StationEntity::class, ThreadEntity::class, TransportSubtypeEntity::class, PaginationEntity::class, SegmentScheduleEntity::class], version = 1)
 @TypeConverters(ScheduleConverter::class, DirectionConverter::class, Converters::class)
 abstract class ScheduleDatabase : RoomDatabase() {
 

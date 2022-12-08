@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "cbe98eda5b0c330b6d74b22a20ef681b",
+    "identityHash": "c3572a2a0f6b87fbb9094753e71b2b13",
     "entities": [
       {
         "tableName": "country",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "region",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `settlements` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `settlements` TEXT NOT NULL, `title` TEXT NOT NULL, `country_id` TEXT NOT NULL, PRIMARY KEY(`code`), FOREIGN KEY(`country_id`) REFERENCES `country`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "code",
@@ -57,6 +57,12 @@
             "columnName": "title",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "country_id",
+            "columnName": "country_id",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -65,12 +71,34 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_region_country_id",
+            "unique": false,
+            "columnNames": [
+              "country_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_region_country_id` ON `${TABLE_NAME}` (`country_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "country",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "country_id"
+            ],
+            "referencedColumns": [
+              "code"
+            ]
+          }
+        ]
       },
       {
         "tableName": "settlement",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `stations` TEXT NOT NULL, `title` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `stations` TEXT NOT NULL, `title` TEXT NOT NULL, `region_id` TEXT NOT NULL, PRIMARY KEY(`code`), FOREIGN KEY(`region_id`) REFERENCES `region`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "code",
@@ -89,6 +117,12 @@
             "columnName": "title",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "region_id",
+            "columnName": "region_id",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -97,12 +131,34 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_settlement_region_id",
+            "unique": false,
+            "columnNames": [
+              "region_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_settlement_region_id` ON `${TABLE_NAME}` (`region_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "region",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "region_id"
+            ],
+            "referencedColumns": [
+              "code"
+            ]
+          }
+        ]
       },
       {
         "tableName": "station",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `direction` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `station_type` TEXT NOT NULL, `title` TEXT NOT NULL, `transport_type` TEXT NOT NULL, PRIMARY KEY(`code`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`code` TEXT NOT NULL, `direction` TEXT NOT NULL, `latitude` REAL, `longitude` REAL, `station_type` TEXT NOT NULL, `title` TEXT NOT NULL, `transport_type` TEXT NOT NULL, `settlement_id` TEXT NOT NULL, PRIMARY KEY(`code`), FOREIGN KEY(`settlement_id`) REFERENCES `settlement`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "code",
@@ -145,6 +201,12 @@
             "columnName": "transport_type",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "settlement_id",
+            "columnName": "settlement_id",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -153,14 +215,36 @@
           ],
           "autoGenerate": false
         },
-        "indices": [],
-        "foreignKeys": []
+        "indices": [
+          {
+            "name": "index_station_settlement_id",
+            "unique": false,
+            "columnNames": [
+              "settlement_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_station_settlement_id` ON `${TABLE_NAME}` (`settlement_id`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "settlement",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "settlement_id"
+            ],
+            "referencedColumns": [
+              "code"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cbe98eda5b0c330b6d74b22a20ef681b')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c3572a2a0f6b87fbb9094753e71b2b13')"
     ]
   }
 }

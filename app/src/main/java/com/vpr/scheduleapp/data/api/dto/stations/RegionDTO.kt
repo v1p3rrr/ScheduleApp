@@ -16,11 +16,12 @@ data class RegionDTO(
         )
     }
 
-    fun toRegionEntity(): RegionEntity {
+    fun toRegionEntity(countryCode: String): RegionEntity {
         return RegionEntity(
             code = codes.yandex_code,
-            settlements = settlements.map { it.toSettlementEntity() },
-            title = title
+            settlements = settlements.map { it.toSettlementEntity(codes.yandex_code) },
+            title = title,
+            country_id = countryCode
         )
     }
 }

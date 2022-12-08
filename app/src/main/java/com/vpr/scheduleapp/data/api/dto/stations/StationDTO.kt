@@ -24,7 +24,7 @@ data class StationDTO(
         )
     }
 
-    fun toStationEntity(): StationEntity {
+    fun toStationEntity(settlementCode: String): StationEntity {
         return StationEntity(
             code = codes.yandex_code,
             direction = direction,
@@ -32,7 +32,8 @@ data class StationDTO(
             longitude = longitude,
             station_type = station_type,
             title = title,
-            transport_type = transport_type
+            transport_type = transport_type,
+            settlement_id = settlementCode
         )
     }
 }
