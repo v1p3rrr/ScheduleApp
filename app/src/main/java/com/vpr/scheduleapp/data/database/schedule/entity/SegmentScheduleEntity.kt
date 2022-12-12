@@ -18,17 +18,17 @@ data class SegmentScheduleEntity(
     @ColumnInfo
     val arrival: String,
     @ColumnInfo
-    val arrival_platform: String,
+    val arrival_platform: String?,
     @ColumnInfo
-    val arrival_terminal: String,
+    val arrival_terminal: String?,
     @ColumnInfo
     val departure: String,
     @ColumnInfo
-    val departure_platform: String,
+    val departure_platform: String?,
     @ColumnInfo
-    val departure_terminal: String,
+    val departure_terminal: String?,
     @ColumnInfo
-    val duration: Int,
+    val duration: Int?,
     @ColumnInfo(index = true)
     val from_id: String,
     @ColumnInfo(index = true)
@@ -36,11 +36,11 @@ data class SegmentScheduleEntity(
     @ColumnInfo
     val has_transfers: Boolean,
     @ColumnInfo
-    val start_date: String,
+    val start_date: String?,
     @ColumnInfo
-    val stops: String,
+    val stops: String?,
     @ColumnInfo(index = true)
-    val thread_id: String,
+    val thread_id: String?,
     @ColumnInfo(index = true)
     val pagination_id: String? = null,
     @ColumnInfo

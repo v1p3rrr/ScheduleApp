@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "ff03988c731bfd47a96a556bdabfa394",
+    "identityHash": "f5ee620209e0a2ecdac7c3969048d518",
     "entities": [
       {
         "tableName": "schedule_station",
@@ -413,7 +413,7 @@
       },
       {
         "tableName": "segment_schedule",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `arrival` TEXT NOT NULL, `arrival_platform` TEXT NOT NULL, `arrival_terminal` TEXT NOT NULL, `departure` TEXT NOT NULL, `departure_platform` TEXT NOT NULL, `departure_terminal` TEXT NOT NULL, `duration` INTEGER NOT NULL, `from_id` TEXT NOT NULL, `to_id` TEXT NOT NULL, `has_transfers` INTEGER NOT NULL, `start_date` TEXT NOT NULL, `stops` TEXT NOT NULL, `thread_id` TEXT NOT NULL, `pagination_id` TEXT, `date` TEXT NOT NULL, FOREIGN KEY(`from_id`) REFERENCES `station`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`to_id`) REFERENCES `station`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`thread_id`) REFERENCES `thread`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`pagination_id`) REFERENCES `pagination`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `arrival` TEXT NOT NULL, `arrival_platform` TEXT, `arrival_terminal` TEXT, `departure` TEXT NOT NULL, `departure_platform` TEXT, `departure_terminal` TEXT, `duration` INTEGER, `from_id` TEXT NOT NULL, `to_id` TEXT NOT NULL, `has_transfers` INTEGER NOT NULL, `start_date` TEXT, `stops` TEXT, `thread_id` TEXT, `pagination_id` TEXT, `date` TEXT NOT NULL, FOREIGN KEY(`from_id`) REFERENCES `station`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`to_id`) REFERENCES `station`(`code`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`thread_id`) REFERENCES `thread`(`uid`) ON UPDATE NO ACTION ON DELETE NO ACTION , FOREIGN KEY(`pagination_id`) REFERENCES `pagination`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -431,13 +431,13 @@
             "fieldPath": "arrival_platform",
             "columnName": "arrival_platform",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "arrival_terminal",
             "columnName": "arrival_terminal",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "departure",
@@ -449,19 +449,19 @@
             "fieldPath": "departure_platform",
             "columnName": "departure_platform",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "departure_terminal",
             "columnName": "departure_terminal",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "duration",
             "columnName": "duration",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "from_id",
@@ -485,19 +485,19 @@
             "fieldPath": "start_date",
             "columnName": "start_date",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "stops",
             "columnName": "stops",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "thread_id",
             "columnName": "thread_id",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "pagination_id",
@@ -607,7 +607,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ff03988c731bfd47a96a556bdabfa394')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f5ee620209e0a2ecdac7c3969048d518')"
     ]
   }
 }

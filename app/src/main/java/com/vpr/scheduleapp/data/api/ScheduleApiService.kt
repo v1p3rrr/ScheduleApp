@@ -27,11 +27,11 @@ interface ScheduleApiService {
     ): Call<StationScheduleDTO>
 
     @GET("./search/?transport_types=suburban")
-    fun getScheduleByStationCodeAndDate(
+    suspend fun getScheduleByStationCodeAndDate(
         @Query("apikey") apikey: String = API_KEY,
         @Query("from") from_code: String = "s9879631",
         @Query("to") to_code: String = "s9600771",
         @Query("date") date: String = "2022-11-22",
         @Query("lang") lang: String = "ru_RU"
-    ): Call<ScheduleBetweenDTO>
+    ): ScheduleBetweenDTO
 }

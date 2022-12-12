@@ -19,8 +19,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(private val repository: ScheduleRepository) :
     ViewModel() {
 
-    private val _scheduleListState = mutableStateOf(emptyList<Segment?>())
-    val scheduleListState: State<List<Segment?>> = _scheduleListState
+    private val _scheduleListState = mutableStateOf(SegmentScheduleState())
+    val scheduleListState: State<SegmentScheduleState> = _scheduleListState
 
     private val _errorMessageSharedFlow = MutableSharedFlow<String>()
     val errorMessageSharedFlow = _errorMessageSharedFlow.asSharedFlow()
@@ -40,12 +40,23 @@ class MainViewModel @Inject constructor(private val repository: ScheduleReposito
                 repository.getScheduleByStationCodeAndDate(from, to, date).onEach { result ->
                     when (result) {
                         is Resource.Success -> {
-                            _scheduleListState.value = result.data ?: emptyList()
+                            _scheduleListState.value = scheduleListState.value.copy(
+                                segment = result.data ?: emptyList(),
+                                isLoading = false
+                            )
                         }
                         is Resource.Error -> {
+                            _scheduleListState.value = scheduleListState.value.copy(
+                                segment = result.data ?: emptyList(),
+                                isLoading = false
+                            )
                             _errorMessageSharedFlow.emit(result.message?: "Unknown error")
                         }
                         is Resource.Loading -> {
+                            _scheduleListState.value = scheduleListState.value.copy(
+                                segment = result.data ?: emptyList(),
+                                isLoading = true
+                            )
                             _errorMessageSharedFlow.emit(result.message?: "Loading")
                         }
                     }
