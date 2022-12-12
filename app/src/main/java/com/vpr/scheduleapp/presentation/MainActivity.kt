@@ -38,7 +38,7 @@ class MainActivity: AppCompatActivity() {
         setContent {
             val snackbarHostState = remember { SnackbarHostState() }
             ScheduleAppTheme {
-                ScheduleListScreen()
+                ScheduleListScreen(snackbarHostState)
 
                 LaunchedEffect(key1 = true) {
                     vm.errorMessageSharedFlow.collectLatest {
@@ -58,80 +58,85 @@ class MainActivity: AppCompatActivity() {
     // migrate to rxjava
 
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun ScheduleListScreen(modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
-        Surface {
-            val scheduleListState = viewModel.scheduleListState.value
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-
-                val focusManager = LocalFocusManager.current
-                SearchBar(
-                    onQueryChange = {
-                        //viewModel.getScheduleByStationAndDate("s9600771", "2022-11-17")
-                        //todo how to clear focus when not typing and clicked/swiped other element?
-                    },
-                    modifier = Modifier.padding(vertical = 4.dp)
-                )
-                Row(
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp), horizontalArrangement = Arrangement.SpaceEvenly
+    fun ScheduleListScreen(snackbarHostState: SnackbarHostState ,modifier: Modifier = Modifier, viewModel: MainViewModel = viewModel()) {
+        Scaffold (snackbarHost = { SnackbarHost(snackbarHostState) }, content = { padding ->
+            Surface(modifier= Modifier.padding(padding)) {
+                val scheduleListState = viewModel.scheduleListState.value
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Button(onClick = {
-                        viewModel.getScheduleByStationCodeAndDate(
-                            from = "s9879631", to = "s9600771", date = LocalDate.now().format(
-                                DateTimeFormatter.ISO_DATE
+
+                    val focusManager = LocalFocusManager.current
+                    SearchBar(
+                        onQueryChange = {
+                            //viewModel.getScheduleByStationAndDate("s9600771", "2022-11-17")
+                            //todo how to clear focus when not typing and clicked/swiped other element?
+                        },
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        Button(onClick = {
+                            viewModel.getScheduleByStationCodeAndDate(
+                                from = "s9879631", to = "s9600771", date = LocalDate.now().format(
+                                    DateTimeFormatter.ISO_DATE
+                                )
                             )
-                        )
-                    }) {
-                        Text(text = "Today", fontSize = 12.sp)
-                    }
-                    Button(onClick = {
-                        viewModel.getScheduleByStationCodeAndDate(
-                            from = "s9879631",
-                            to = "s9600771",
-                            date = LocalDate.now().plusDays(1).format(
-                                DateTimeFormatter.ISO_DATE
+                        }) {
+                            Text(text = "Today", fontSize = 12.sp)
+                        }
+                        Button(onClick = {
+                            viewModel.getScheduleByStationCodeAndDate(
+                                from = "s9879631",
+                                to = "s9600771",
+                                date = LocalDate.now().plusDays(1).format(
+                                    DateTimeFormatter.ISO_DATE
+                                )
                             )
-                        )
-                    }) {
-                        Text(text = "Tomorrow", fontSize = 12.sp)
-                    }
-                }
-                LazyColumn(modifier.pointerInput(Unit) {
-                    detectTapGestures(onTap = {
-                        focusManager.clearFocus()
-                    })
-                }) {
-                    items(scheduleListState.segment.size) { i ->
-                        val scheduleElement = scheduleListState.segment[i]
-                        scheduleElement?.let {
-                            ScheduleSimpleCard(
-                                shortTitle = scheduleElement.thread.short_title
-                                    ?: scheduleElement.thread.title
-                                    ?: "Unknown station",
-                                departureTime = scheduleElement.departure,
-                                arrivalTime = scheduleElement.arrival,
-                                travelTime = scheduleElement.duration.toString()
-                            )
+                        }) {
+                            Text(text = "Tomorrow", fontSize = 12.sp)
                         }
                     }
+                    LazyColumn(modifier.pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            focusManager.clearFocus()
+                        })
+                    }) {
+                        items(scheduleListState.segment.size) { i ->
+                            val scheduleElement = scheduleListState.segment[i]
+                            scheduleElement?.let {
+                                ScheduleSimpleCard(
+                                    shortTitle = scheduleElement.thread.short_title
+                                        ?: scheduleElement.thread.title
+                                        ?: "Unknown station",
+                                    departureTime = scheduleElement.departure,
+                                    arrivalTime = scheduleElement.arrival,
+                                    travelTime = scheduleElement.duration.toString()
+                                )
+                            }
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                if (scheduleListState.isLoading) {
-                    CircularProgressIndicator()
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    if (scheduleListState.isLoading) {
+                        CircularProgressIndicator()
+                    }
                 }
-            }
 
+            }
         }
+        )
     }
 }
 

@@ -30,7 +30,7 @@ abstract class ScheduleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertPagination(paginationEntity: PaginationEntity)
 
-    @Query("DELETE FROM segment_schedule WHERE from_id = :from AND to_id = :to AND start_date = :date")
+    @Query("DELETE FROM segment_schedule WHERE from_id = :from AND to_id = :to AND date = :date")
     abstract fun deleteScheduleByStation(from: String, to: String, date: String)
 
     @Update

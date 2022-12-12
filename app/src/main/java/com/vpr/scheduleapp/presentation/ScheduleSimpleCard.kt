@@ -56,6 +56,6 @@ fun PreviewScheduleSimpleCard() {
         shortTitle = "Москва - Питер",
         departureTime = "99:99",
         arrivalTime = "99:99",
-        travelTime = "99:99"
+        travelTime = "В пути 99 ч. 99 м."
     )
 }

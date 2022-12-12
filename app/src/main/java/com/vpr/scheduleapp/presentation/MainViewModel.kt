@@ -33,7 +33,6 @@ class MainViewModel @Inject constructor(private val repository: ScheduleReposito
     val stationsLiveData: LiveData<StationSchedule>
         get() = _stationsLiveData
 
-
     fun getScheduleByStationCodeAndDate(from: String, to: String, date: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
@@ -44,6 +43,8 @@ class MainViewModel @Inject constructor(private val repository: ScheduleReposito
                                 segment = result.data ?: emptyList(),
                                 isLoading = false
                             )
+                            _errorMessageSharedFlow.emit(result.message?: "Success")
+
                         }
                         is Resource.Error -> {
                             _scheduleListState.value = scheduleListState.value.copy(
